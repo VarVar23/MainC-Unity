@@ -7,17 +7,17 @@ namespace Game
 {
     public interface IFly
     {
-        public void Fly();
+        void Fly();
     }
 
     public interface IRotation
     {
-        public void Rotation();
+        void Rotation();
     }
 
     public interface IFlicker
     {
-        public void Flicker();
+        void Flicker();
     }
 
     public interface IAction

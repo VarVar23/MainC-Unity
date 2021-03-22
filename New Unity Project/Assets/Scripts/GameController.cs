@@ -1,15 +1,33 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Game
 {
     public sealed class GameController : MonoBehaviour, IDisposable
     {
         private InteractiveObject[] _interactiveObjects;
+        public Text _finishGameLabel;
+        private DisplayEndGame _displayEndGame;
 
         private void Awake()
         {
             _interactiveObjects = FindObjectsOfType<InteractiveObject>();
+            _displayEndGame = new DisplayEndGame(_finishGameLabel);
+
+            foreach (var o in _interactiveObjects)
+            {
+                if (o is BadBonus badBonus)
+                {
+                    badBonus.CaughtPlayer += CaughtPlayer;
+                    badBonus.CaughtPlayer += _displayEndGame.GameOver;
+                }
+            }
+        }
+
+        private void CaughtPlayer(object value)
+        {
+            Time.timeScale = 0.0f;
         }
 
         private void Update()
@@ -41,7 +59,16 @@ namespace Game
         {
             foreach (var o in _interactiveObjects)
             {
-                Destroy(o.gameObject);
+                if (o is InteractiveObject interactiveObject)
+                {
+                    Destroy(interactiveObject.gameObject);
+                    if (o is BadBonus badBonus)
+                    {
+                        badBonus.CaughtPlayer -= CaughtPlayer;
+                        badBonus.CaughtPlayer -= _displayEndGame.GameOver;
+                    }
+                }
+
             }
         }
     }

@@ -7,6 +7,15 @@ namespace Game
         private float _lengthFly;
         private float _speedRotation;
 
+        public delegate void CaughtPlayerChange(object value);
+        private event CaughtPlayerChange _caughtPlayer;
+        public event CaughtPlayerChange CaughtPlayer
+        {
+            add { _caughtPlayer += value; }
+            remove { _caughtPlayer -= value; }
+        }
+
+
         private void Awake()
         {
             _lengthFly = Random.Range(1.0f, 5.0f);
@@ -15,7 +24,7 @@ namespace Game
 
         protected override void Interaction()
         {
-            // Destroy
+            _caughtPlayer?.Invoke(this);
         }
 
         public void Fly()
